@@ -1,4 +1,3 @@
-<h1>View cart</h1>
 <?php
 include_once 'user.php';
 include_once 'database.php';
@@ -7,7 +6,30 @@ if (!isset($_SESSION['user'])) {
 	header('Location: ./login.php');
 	exit;
 }
-$cart = Database::getCart($_SESSION['user']);
-print_r($cart);
 ?>
-<h2>Products</h2>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Cart</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+	<?php
+	session_start();
+	include_once './components/Navbar.php';
+	$navBar = new NavBar();
+	$navBar->render();
+
+	$cart = Database::getCart($_SESSION['user']);
+	$cart->render();
+	?>
+</body>
+
+</html>
+<?php
+?>

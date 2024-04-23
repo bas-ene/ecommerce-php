@@ -15,7 +15,7 @@ class Cart
 	{
 		echo '<div class="grid grid-cols-3 gap-4 p-4 m-4">';
 		foreach ($this->products as $product) {
-			$product->render();
+			$product->renderInCart();
 		}
 		echo '</div>';
 	}

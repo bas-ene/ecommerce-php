@@ -68,4 +68,22 @@ class Product
 			</form>
 		</div>';
 	}
+
+	public function renderInCart()
+	{
+		echo '
+		<div class="bg-white shadow-md rounded-lg" id="product-' . $this->getId() . '">
+			<img class="w-auto h-48 object-cover" src="' . $this->getImage() . '" alt="' . $this->getName() . '">
+			<h2 class="text-3xl font-bold mt-4 ml-4">' . $this->getName() . '</h2>
+			<div class="flex items center mt-2 ml-4">
+				<p class="text-gray-700 mt-2 ml-4">' . $this->getDescription() . '</p>
+				<p class="text-gray-700 mt-2 ml-4">Price: ' . $this->getPrice() . '</p>
+				<p class="text-gray-700 mt-2 ml-4">Quantity: ' . $this->getQuantity() . '</p>
+			</div>
+			<form action="./removeFromCart.php" method="post">
+				<input type="hidden" name="id" value="' . $this->getId() . '" />
+				<button class="bg-red-700 text-white py-2 px-4 rounded-lg ml-4 mt-4 mb-4 cursor-pointer" type="submit">Remove from cart</button>
+			</form>
+		</div>';
+	}
 }

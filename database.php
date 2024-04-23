@@ -59,7 +59,7 @@ class Database
 		$result = $stmt->get_result();
 		if ($result->num_rows > 0) {
 			$row = $result->fetch_assoc();
-			$product = new Product($row['name'], $row['price'], $row['quantity'], $row['description'], $row['image'], $row['id']);
+			$product = new Product($row['name'], $row['price'], $row['quantity'], $row['description'], $row['img_path'], $row['id']);
 			return $product;
 		}
 		return null;
@@ -163,10 +163,68 @@ class Database
 			$cart = self::getCart($user);
 		}
 
-		$sql = "INSERT INTO products_in_carts (cart_id, product_id, quantity) VALUES (?, ?, ?)";
+		$sql = "INSERT INTO products_in_carts (cart_id, product_id, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + 1";
 		$stmt = self::$connection->prepare($sql);
 		$stmt->bind_param("sii", $cart->getUUID(), $productId, $quantity);
 		$stmt->execute();
+		if ($stmt->affected_rows > 0) {
+			self::setQuantityOfProductInStock(-$quantity, $productId);
+		}
+		return $stmt->affected_rows > 0;
+	}
+
+	public static function setQuantityOfProductInStock(int $quantityDelta, int $productId): void
+	{
+		self::connect();
+		$sql = "UPDATE products SET quantity = quantity + ? WHERE id = ?";
+		$stmt = self::$connection->prepare($sql);
+		$stmt->bind_param("ii", $quantityDelta, $productId);
+		$stmt->execute();
+	}
+
+	public static function setQuantity(User $user, int $productId, int $quantity): bool
+	{
+		if ($quantity <= 0) {
+			return false;
+		}
+		self::connect();
+		$cart = self::getCart($user);
+		if ($cart === null) {
+			return false;
+		}
+
+		$sql = "UPDATE products_in_carts SET quantity = ? WHERE cart_id = ? AND product_id = ?";
+		$stmt = self::$connection->prepare($sql);
+		$stmt->bind_param("isi", $quantity, $cart->getUUID(), $productId);
+		$stmt->execute();
+
+		return $stmt->affected_rows > 0;
+	}
+
+	public static function removeFromCart(User $user, int $productId): bool
+	{
+		self::connect();
+		$cart = self::getCart($user);
+		if ($cart === null) {
+			return false;
+		}
+
+		#get the quantity of the product in the cart 
+		$sql = "SELECT quantity FROM products_in_carts WHERE cart_id = ? AND product_id = ?";
+		$stmt = self::$connection->prepare($sql);
+		$stmt->bind_param("si", $cart->getUUID(), $productId);
+		$stmt->execute();
+
+		$result = $stmt->get_result();
+		$row = $result->fetch_assoc();
+		$quantity = $row['quantity'];
+
+		$sql = "DELETE FROM products_in_carts WHERE cart_id = ? AND product_id = ?";
+		$stmt = self::$connection->prepare($sql);
+		$stmt->bind_param("si", $cart->getUUID(), $productId);
+		$stmt->execute();
+
+		self::setQuantityOfProductInStock($quantity, $productId);
 
 		return $stmt->affected_rows > 0;
 	}
