@@ -25,13 +25,22 @@ class ProductList
 		array_push($this->products, $product);
 	}
 
-	private function addDummys()
+	public function renderAsTable()
 	{
-		$this->addProduct(new Product('Prodotto1', 100, 10, 'Descrizione del p1', 'img/p1.jpg', 'p1'));
-		$this->addProduct(new Product('Prodotto2', 95, 16, 'Descrizione del p2', 'img/p2.jpg', 'p2'));
-		$this->addProduct(new Product('Prodotto3', 118, 24, 'Descrizione del p2', 'img/p3.jpg', 'p2'));
-		$this->addProduct(new Product('Prodotto1', 100, 10, 'Descrizione del p1', 'img/p1.jpg', 'p1'));
-		$this->addProduct(new Product('Prodotto2', 95, 16, 'Descrizione del p2', 'img/p2.jpg', 'p2'));
-		$this->addProduct(new Product('Prodotto3', 118, 24, 'Descrizione del p2', 'img/p3.jpg', 'p2'));
+		echo '<table class="table-auto">';
+		echo '<thead>'; // Table header
+		echo '<tr>';
+		echo '<th class="px-4 py-2">Name</th>';
+		echo '<th class="px-4 py-2">Price</th>';
+		echo '<th class="px-4 py-2">Quantity</th>';
+		echo '<th class="px-4 py-2">Description</th>';
+		echo '</tr>';
+		echo '</thead>';
+		echo '<tbody>'; // Table body
+		foreach ($this->products as $product) {
+			$product->renderAsRow();
+		}
+		echo '</tbody>';
+		echo '</table>';
 	}
 }

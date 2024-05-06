@@ -8,23 +8,23 @@ if (!isset($_SESSION['user'])) {
 	exit;
 }
 
-if (!isset($_POST['id'])) {
+if (!isset($_POST['id']) || !isset($_POST['quantity']) || $_POST['quantity'] <= 0) {
 	header('Location: ./index.php');
 	exit;
 }
 
 
 $pId = $_POST['id'];
+$quantity = $_POST['quantity'];
 $product = Database::getProduct($pId);
 $user = $_SESSION['user'];
 $cart = Database::getCart($user);
 if ($cart === null) {
 	Database::createCart($user);
-	$cart = Database::getCart($user);
 }
 
-$cart->addProduct($product);
-Database::addToCart($_SESSION['user'], $pId, 1);
+Database::addToCart($_SESSION['user'], $pId, $quantity);
+$cart = Database::getCart($user);
 $_SESSION['cart'] = $cart;
 
 header('Location: ./viewCart.php');

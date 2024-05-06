@@ -2,6 +2,9 @@
 include_once './components/Product.php';
 include_once 'user.php';
 include_once 'cart.php';
+
+use app\User;
+
 class Database
 {
 	private const string host = "localhost";
@@ -163,9 +166,23 @@ class Database
 			$cart = self::getCart($user);
 		}
 
-		$sql = "INSERT INTO products_in_carts (cart_id, product_id, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + 1";
+		#get if the quantity of the product is available
+		$sql = "SELECT quantity FROM products WHERE id = ?";
 		$stmt = self::$connection->prepare($sql);
-		$stmt->bind_param("sii", $cart->getUUID(), $productId, $quantity);
+		$stmt->bind_param("i", $productId);
+		$stmt->execute();
+
+		$result = $stmt->get_result();
+		$row = $result->fetch_assoc();
+		$quantityInStock = $row['quantity'];
+
+		if ($quantityInStock < $quantity) {
+			return false;
+		}
+
+		$sql = "INSERT INTO products_in_carts (cart_id, product_id, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + ?";
+		$stmt = self::$connection->prepare($sql);
+		$stmt->bind_param("siii", $cart->getUUID(), $productId, $quantity, $quantity);
 		$stmt->execute();
 		if ($stmt->affected_rows > 0) {
 			self::setQuantityOfProductInStock(-$quantity, $productId);
@@ -226,6 +243,15 @@ class Database
 
 		self::setQuantityOfProductInStock($quantity, $productId);
 
+		return $stmt->affected_rows > 0;
+	}
+	public static function addProduct(string $name, float $price, int $quantity, string $description, string $image): bool
+	{
+		self::connect();
+		$sql = "INSERT INTO products (name, price, quantity, description, img_path) VALUES (?, ?, ?, ?, ?)";
+		$stmt = self::$connection->prepare($sql);
+		$stmt->bind_param("sdsbs", $name, $price, $quantity, $description, $image);
+		$stmt->execute();
 		return $stmt->affected_rows > 0;
 	}
 }

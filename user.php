@@ -1,4 +1,7 @@
 <?php
+
+namespace app;
+
 class User
 {
 	private int $id;

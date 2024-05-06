@@ -62,7 +62,7 @@ class Product
 				<p class="text-gray-700 mt-2 ml-4">Price: ' . $this->getPrice() . '</p>
 				<p class="text-gray-700 mt-2 ml-4">Quantity: ' . $this->getQuantity() . '</p>
 			</div>
-			<form action="./addToCart.php" method="post">
+			<form action="./productDetails.php" method="get">
 				<input type="hidden" name="id" value="' . $this->getId() . '" />
 				<button class="bg-blue-700 text-white py-2 px-4 rounded-lg ml-4 mt-4 mb-4 cursor-pointer" type="submit">Add to cart</button>
 			</form>
@@ -85,5 +85,36 @@ class Product
 				<button class="bg-red-700 text-white py-2 px-4 rounded-lg ml-4 mt-4 mb-4 cursor-pointer" type="submit">Remove from cart</button>
 			</form>
 		</div>';
+	}
+
+	public function renderDetails()
+	{
+		echo '
+		<div class="bg-white shadow-md rounded-lg" id="product-' . $this->getId() . '">
+			<img class="w-auto h-48 object-cover" src="' . $this->getImage() . '" alt="' . $this->getName() . '">
+			<h2 class="text-3xl font-bold mt-4 ml-4">' . $this->getName() . '</h2>
+			<div class="flex items center mt-2 ml-4">
+				<p class="text-gray-700 mt-2 ml-4">' . $this->getDescription() . '</p>
+				<p class="text-gray-700 mt-2 ml-4">Price: ' . $this->getPrice() . '</p>
+				<p class="text-gray-700 mt-2 ml-4">Quantity: ' . $this->getQuantity() . '</p>
+			</div>
+			<form action="./addToCart.php" method="post" class="flex items-center ml-5">
+				<input type="hidden" name="id" value="' . $this->getId() . '" />
+				<input type="number" name="quantity" value="1" min="1" max="' . $this->getQuantity() . '" />
+				<button class="bg-blue-700 text-white py-2 px-4 rounded-lg ml-5 mt-4 mb-4 cursor-pointer" type="submit">Add to cart</button>
+			</form>
+		</div>';
+	}
+
+	public function renderAsRow()
+	{
+		echo '
+			<tr>
+			<td>' . $this->getName() . '</td> 
+			<td>' . $this->getPrice() . '</td>
+			<td>' . $this->getQuantity() . '</td>
+			<td>' . $this->getDescription() . '</td>
+			</tr>
+		';
 	}
 }

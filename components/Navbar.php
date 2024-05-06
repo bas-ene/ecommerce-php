@@ -10,6 +10,9 @@ class Navbar
 
 		if (isset($_SESSION['user'])) {
 			echo '<a href="/logout.php" class="mr-4">Logout</a>';
+			if ($_SESSION['admin'] == true) {
+				echo '<a href="/admin.php" class="mr-4">Admin</a>';
+			}
 		} else {
 			echo '<a href="/login.php" class="mr-4">Login</a>';
 			echo '<a href="/signup.php" class="mr-4">Register</a>';
