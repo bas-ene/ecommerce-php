@@ -80,9 +80,10 @@ class Product
 				<p class="text-gray-700 mt-2 ml-4">Price: ' . $this->getPrice() . '</p>
 				<p class="text-gray-700 mt-2 ml-4">Quantity: ' . $this->getQuantity() . '</p>
 			</div>
-			<form action="./removeFromCart.php" method="post">
+			<form action="./updateCart.php" method="post">
 				<input type="hidden" name="id" value="' . $this->getId() . '" />
-				<button class="bg-red-700 text-white py-2 px-4 rounded-lg ml-4 mt-4 mb-4 cursor-pointer" type="submit">Remove from cart</button>
+				<input type="number" name="quantity" value="1" min="0" max="' . $this->getQuantity() . '" />
+				<button class="bg-blue-700 text-white py-2 px-4 rounded-lg ml-4 mt-4 mb-4 cursor-pointer" type="submit">Update quantity</button>
 			</form>
 		</div>';
 	}
@@ -109,12 +110,10 @@ class Product
 	public function renderAsRow()
 	{
 		echo '
-			<tr>
 			<td>' . $this->getName() . '</td> 
 			<td>' . $this->getPrice() . '</td>
 			<td>' . $this->getQuantity() . '</td>
 			<td>' . $this->getDescription() . '</td>
-			</tr>
 		';
 	}
 }

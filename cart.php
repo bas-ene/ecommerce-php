@@ -2,7 +2,7 @@
 include_once './components/Product.php';
 class Cart
 {
-	private string $uuid;
+	private $uuid;
 	private $products = array();
 
 	public function __construct(string $uuid, array $products)
@@ -20,7 +20,7 @@ class Cart
 		echo '</div>';
 	}
 
-	public function getUUID(): string
+	public function getUUID()
 	{
 		return $this->uuid;
 	}
@@ -40,6 +40,15 @@ class Cart
 		$index = array_search($product, $this->products);
 		if ($index !== false) {
 			unset($this->products[$index]);
+		}
+	}
+
+	public function updateProduct($id, int $quantity)
+	{
+		foreach ($this->products as $product) {
+			if ($product->getId() == $id) {
+				$product->setQuantity($quantity);
+			}
 		}
 	}
 }

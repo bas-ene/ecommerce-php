@@ -38,7 +38,9 @@ class ProductList
 		echo '</thead>';
 		echo '<tbody>'; // Table body
 		foreach ($this->products as $product) {
+			echo '<td>';
 			$product->renderAsRow();
+			echo '</td>';
 		}
 		echo '</tbody>';
 		echo '</table>';

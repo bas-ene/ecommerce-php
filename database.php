@@ -254,4 +254,8 @@ class Database
 		$stmt->execute();
 		return $stmt->affected_rows > 0;
 	}
+
+	public function updateCart($user, $id, $quantity)
+	{
+	}
 }
