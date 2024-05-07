@@ -82,7 +82,7 @@ class Product
 			</div>
 			<form action="./updateCart.php" method="post">
 				<input type="hidden" name="id" value="' . $this->getId() . '" />
-				<input type="number" name="quantity" value="1" min="0" max="' . $this->getQuantity() . '" />
+				<input type="number" name="quantity" value="1" min="0"/>
 				<button class="bg-blue-700 text-white py-2 px-4 rounded-lg ml-4 mt-4 mb-4 cursor-pointer" type="submit">Update quantity</button>
 			</form>
 		</div>';

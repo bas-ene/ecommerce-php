@@ -255,7 +255,19 @@ class Database
 		return $stmt->affected_rows > 0;
 	}
 
-	public function updateCart($user, $id, $quantity)
+	public static function updateCart(User $user, $id, $quantity)
 	{
+		self::connect();
+		$cart = self::getCart($user);
+		if ($cart === null) {
+			return false;
+		}
+
+		$sql = "UPDATE products_in_carts SET quantity = ? WHERE cart_id = ? AND product_id = ?";
+		$stmt = self::$connection->prepare($sql);
+		$stmt->bind_param("isi", $quantity, $cart->getUUID(), $id);
+		$stmt->execute();
+
+		return $stmt->affected_rows > 0;
 	}
 }

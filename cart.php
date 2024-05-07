@@ -51,4 +51,13 @@ class Cart
 			}
 		}
 	}
+
+	public function getTotal()
+	{
+		$total = 0;
+		foreach ($this->products as $product) {
+			$total += $product->getPrice() * $product->getQuantity();
+		}
+		return $total;
+	}
 }

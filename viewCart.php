@@ -27,6 +27,8 @@ if (!isset($_SESSION['user'])) {
 
 	$cart = Database::getCart($_SESSION['user']);
 	$cart->render();
+
+	echo $cart->getTotal();
 	?>
 </body>
 
